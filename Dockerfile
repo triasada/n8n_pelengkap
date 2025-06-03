@@ -1,5 +1,13 @@
 FROM n8nio/n8n
+USER root
 
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    python3 \
+    python3-pip && \
+    pip3 install gTTS
+
+USER node
 ARG PGPASSWORD
 ARG PGHOST
 ARG PGPORT
