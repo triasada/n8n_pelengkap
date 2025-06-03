@@ -22,5 +22,6 @@ USER node
 ENV N8N_USER_FOLDER=/home/node/.n8n
 ENV N8N_PORT=5678
 EXPOSE 5678
+COPY assets/background.mp4 /home/node/background.mp4
 
 CMD ["n8n"]
