@@ -7,18 +7,16 @@ RUN apt-get update && apt-get install -y \
   python3-pip \
   curl \
   gnupg \
-  ca-certificates \
-  sudo && \
+  ca-certificates && \
   pip3 install gTTS
 
 # Install n8n
 RUN npm install -g n8n
 
-# Set up user (as used by n8n)
-RUN useradd -m -s /bin/bash node && \
-  mkdir /home/node/.n8n && \
-  chown -R node:node /home/node
+# Buat folder untuk n8n dan atur kepemilikan
+RUN mkdir -p /home/node/.n8n && chown -R node:node /home/node
 
+# Gunakan user 'node' yang sudah ada
 USER node
 
 ENV N8N_USER_FOLDER=/home/node/.n8n
