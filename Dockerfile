@@ -1,33 +1,28 @@
-FROM n8nio/n8n
-USER root
+FROM node:18-bullseye-slim
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    python3 \
-    python3-pip && \
-    pip3 install gTTS
+  ffmpeg \
+  python3 \
+  python3-pip \
+  curl \
+  gnupg \
+  ca-certificates \
+  sudo && \
+  pip3 install gTTS
+
+# Install n8n
+RUN npm install -g n8n
+
+# Set up user (as used by n8n)
+RUN useradd -m -s /bin/bash node && \
+  mkdir /home/node/.n8n && \
+  chown -R node:node /home/node
 
 USER node
-ARG PGPASSWORD
-ARG PGHOST
-ARG PGPORT
-ARG PGDATABASE
-ARG PGUSER
 
-ARG USERNAME
-ARG PASSWORD
+ENV N8N_USER_FOLDER=/home/node/.n8n
+ENV N8N_PORT=5678
+EXPOSE 5678
 
-ENV DB_TYPE=postgresdb
-ENV DB_POSTGRESDB_DATABASE=$PGDATABASE
-ENV DB_POSTGRESDB_HOST=$PGHOST
-ENV DB_POSTGRESDB_PORT=$PGPORT
-ENV DB_POSTGRESDB_USER=$PGUSER
-ENV DB_POSTGRESDB_PASSWORD=$PGPASSWORD
-
-ENV N8N_BASIC_AUTH_ACTIVE=true
-ENV N8N_BASIC_AUTH_USER=$USERNAME
-ENV N8N_BASIC_AUTH_PASSWORD=$PASSWORD
-
-ENV ENABLE_ALPINE_PRIVATE_NETWORKING=true
-
-CMD ["n8n", "start"]
+CMD ["n8n"]
